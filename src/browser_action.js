@@ -35,8 +35,7 @@ browseraction.QUICK_ADD_API_URL_ = 'https://www.googleapis.com/calendar/v3/calen
  */
 browseraction.initialize = function() {
   chrome.extension.getBackgroundPage().background.log('browseraction.initialize()');
-  utils.startAnalytics_();
-  _gaq.push(['_trackEvent', 'Popup', 'Shown']);
+
   browseraction.fillMessages_();
   browseraction.installButtonClickHandlers_();
   browseraction.showLoginMessageIfNotAuthenticated_();
@@ -117,25 +116,25 @@ browseraction.installButtonClickHandlers_ = function() {
   });
 
   $('#show_quick_add').on('click', function() {
-    _gaq.push(['_trackEvent', 'Quick Add', 'Toggled']);
+
     $(this).toggleClass('rotated');
     $('#quick-add').slideToggle(200);
     $('#quick-add-event-title').focus();
   });
 
   $('#sync_now').on('click', function() {
-    _gaq.push(['_trackEvent', 'Popup', 'Manual Refresh']);
+
     chrome.extension.sendMessage({method: 'events.feed.fetch'},
         browseraction.showEventsFromFeed_);
   });
 
   $('#show_options').on('click', function() {
-    _gaq.push(['_trackEvent', 'Options', 'Shown']);
+
     chrome.tabs.create({'url': 'options.html'});
   });
 
   $('#quick_add_button').on('click', function() {
-    _gaq.push(['_trackEvent', 'Quick Add', 'Event Created']);
+
     browseraction.createQuickAddEvent_($('#quick-add-event-title').val().toString(),
         $('#quick-add-calendar-list').val());
     $('#quick-add-event-title').val('');  // Remove the existing text from the field.
@@ -151,7 +150,7 @@ browseraction.installButtonClickHandlers_ = function() {
 browseraction.showLoginMessageIfNotAuthenticated_ = function() {
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
     if (chrome.runtime.lastError || !authToken) {
-      _gaq.push(['_trackEvent', 'getAuthToken', 'Failed', chrome.runtime.lastError.message]);
+
       chrome.extension.getBackgroundPage().background.log('getAuthToken',
           chrome.runtime.lastError.message);
       browseraction.stopSpinnerRightNow();
@@ -159,7 +158,7 @@ browseraction.showLoginMessageIfNotAuthenticated_ = function() {
       $('#action-bar').hide();
       $('#calendar-events').hide();
     } else {
-      _gaq.push(['_trackEvent', 'getAuthToken', 'OK']);
+
       $('#error').hide();
       $('#action-bar').show();
       $('#calendar-events').show();
@@ -214,11 +213,11 @@ browseraction.createQuickAddEvent_ = function(text, calendarId) {
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
     if (chrome.runtime.lastError || !authToken) {
       chrome.extension.getBackgroundPage().background.log('getAuthToken', chrome.runtime.lastError.message);
-      _gaq.push(['_trackEvent', 'getAuthToken', 'Failed', chrome.runtime.lastError.message]);
+
       return;
     }
-    _gaq.push(['_trackEvent', 'getAuthToken', 'OK']);
-    _gaq.push(['_trackEvent', 'QuickAdd', 'Add']);
+
+
 
     browseraction.startSpinner();
     $.ajax(quickAddUrl, {
@@ -236,7 +235,7 @@ browseraction.createQuickAddEvent_ = function(text, calendarId) {
         window.setTimeout(function() {
           $('#info_bar').slideUp();
         }, constants.INFO_BAR_DISMISS_TIMEOUT_MS);
-        _gaq.push(['_trackEvent', 'QuickAdd', 'Error', response.statusText]);
+
         chrome.extension.getBackgroundPage().background.log('Error adding Quick Add event', response.statusText);
         if (response.status === 401) {
           chrome.identity.removeCachedAuthToken({ 'token': authToken }, function() {});
@@ -281,14 +280,14 @@ browseraction.showEventsFromFeed_ = function(events) {
 
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
     if (chrome.runtime.lastError || !authToken) {
-      _gaq.push(['_trackEvent', 'getAuthToken', 'Failed', chrome.runtime.lastError.message]);
+
       chrome.extension.getBackgroundPage().background.log('getAuthToken',
           chrome.runtime.lastError.message);
       $('#error').show();
       $('#action-bar').hide();
       $('#calendar-events').hide();
     } else {
-      _gaq.push(['_trackEvent', 'getAuthToken', 'OK']);
+
       $('#error').hide();
       $('#action-bar').show();
       $('#calendar-events').show();

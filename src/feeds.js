@@ -89,11 +89,11 @@ feeds.requestInteractiveAuthToken = function() {
   background.log('feeds.requestInteractiveAuthToken()');
   chrome.identity.getAuthToken({'interactive': true}, function (accessToken) {
     if (chrome.runtime.lastError || !authToken) {
-      _gaq.push(['_trackEvent', 'getAuthToken (interactive)', 'Failed', chrome.runtime.lastError.message]);
+
       background.log('getAuthToken', chrome.runtime.lastError.message);
       return;
     }
-    _gaq.push(['_trackEvent', 'getAuthToken (interactive)', 'OK']);
+
     feeds.refreshUI();  // Causes the badge text to be updated.
     feeds.fetchCalendars();
   });
@@ -108,11 +108,11 @@ feeds.fetchSettings = function() {
 
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
     if (chrome.runtime.lastError) {
-      _gaq.push(['_trackEvent', 'getAuthToken', 'Failed', chrome.runtime.lastError.message]);
+
       return;
     }
-    _gaq.push(['_trackEvent', 'getAuthToken', 'OK']);
-    _gaq.push(['_trackEvent', 'Fetch', 'Settings']);
+
+
 
     $.ajax(feeds.SETTINGS_API_URL_, {
       headers: {
@@ -132,7 +132,7 @@ feeds.fetchSettings = function() {
         background.log('Remote settings saved to local storage.', settings.items);
       },
       error: function(response) {
-        _gaq.push(['_trackEvent', 'Fetch', 'Error (Settings)', response.statusText]);
+
         background.log('Fetch Error (Settings)', response.statusText);
       }
     });
@@ -157,13 +157,13 @@ feeds.fetchCalendars = function() {
     var storedCalendars = storage['calendars'] || {};
     chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
       if (chrome.runtime.lastError) {
-        _gaq.push(['_trackEvent', 'getAuthToken', 'Failed', chrome.runtime.lastError.message]);
+
         chrome.extension.sendMessage({method: 'sync-icon.spinning.stop'});
         feeds.refreshUI();
         return;
       }
-      _gaq.push(['_trackEvent', 'getAuthToken', 'OK']);
-      _gaq.push(['_trackEvent', 'Fetch', 'CalendarList']);
+
+
 
       $.ajax(feeds.CALENDAR_LIST_API_URL_, {
         headers: {
@@ -211,7 +211,7 @@ feeds.fetchCalendars = function() {
         },
         error: function(response) {
           chrome.extension.sendMessage({method: 'sync-icon.spinning.stop'});
-          _gaq.push(['_trackEvent', 'Fetch', 'Error (Calendars)', response.statusText]);
+
           background.log('Fetch Error (Calendars)', response.statusText);
           if (response.status === 401) {
             feeds.refreshUI();
@@ -308,13 +308,13 @@ feeds.fetchEventsFromCalendar_ = function(feed, callback) {
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
     if (chrome.runtime.lastError || !authToken) {
       background.log('getAuthToken', chrome.runtime.lastError.message);
-      _gaq.push(['_trackEvent', 'getAuthToken', 'Failed', chrome.runtime.lastError.message]);
+
       chrome.extension.sendMessage({method: 'sync-icon.spinning.stop'});
       feeds.refreshUI();
       return;
     }
-    _gaq.push(['_trackEvent', 'getAuthToken', 'OK']);
-    _gaq.push(['_trackEvent', 'Fetch', 'Events']);
+
+
 
     $.ajax(feedUrl, {
       headers: {
@@ -358,7 +358,7 @@ feeds.fetchEventsFromCalendar_ = function(feed, callback) {
       })(feed),
       error: function(response) {
         chrome.extension.sendMessage({method: 'sync-icon.spinning.stop'});
-        _gaq.push(['_trackEvent', 'Fetch', 'Error (Events)', response.statusText]);
+
         background.log('Fetch Error (Events)', response.statusText);
         if (response.status === 401) {
           feeds.refreshUI();
