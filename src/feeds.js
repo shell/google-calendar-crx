@@ -475,11 +475,11 @@ feeds.joinLink = function(event) {
   if (event.hangout_url)
     return event.hangout_url;
 
-  if (event.location && event.location.match(/http:\/\/[^\s]*/))
-    return event.location.match(/http:\/\/[^\s]*/)[0];
+  if (event.location && event.location.match(/https?:\/\/[^\s]*/))
+    return event.location.match(/https?:\/\/[^\s]*/)[0];
 
-  if (event.description && event.description.match(/http:\/\/[^\s]*/))
-    return event.description.match(/http:\/\/[^\s]*/)[0];
+  if (event.description && event.description.match(/https?:\/\/[^\s]*/))
+    return event.description.match(/https?:\/\/[^\s]*/)[0];
 
   return false;
 };
