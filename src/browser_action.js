@@ -149,6 +149,8 @@ browseraction.installButtonClickHandlers_ = function() {
  */
 browseraction.showLoginMessageIfNotAuthenticated_ = function() {
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
     if (chrome.runtime.lastError || !authToken) {
 
       chrome.extension.getBackgroundPage().background.log('getAuthToken',
@@ -211,6 +213,9 @@ browseraction.createQuickAddEvent_ = function(text, calendarId) {
   var quickAddUrl = browseraction.QUICK_ADD_API_URL_.replace('{calendarId}', encodeURIComponent(calendarId))
       + '?text=' + encodeURIComponent(text);
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
+
     if (chrome.runtime.lastError || !authToken) {
       chrome.extension.getBackgroundPage().background.log('getAuthToken', chrome.runtime.lastError.message);
 
@@ -279,6 +284,9 @@ browseraction.showEventsFromFeed_ = function(events) {
   $('#calendar-events').empty();
 
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
+
     if (chrome.runtime.lastError || !authToken) {
 
       chrome.extension.getBackgroundPage().background.log('getAuthToken',

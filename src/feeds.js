@@ -88,6 +88,9 @@ feeds.lastFetchedAt = null;
 feeds.requestInteractiveAuthToken = function() {
   background.log('feeds.requestInteractiveAuthToken()');
   chrome.identity.getAuthToken({'interactive': true}, function (accessToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
+
     if (chrome.runtime.lastError || !authToken) {
 
       background.log('getAuthToken', chrome.runtime.lastError.message);
@@ -107,6 +110,10 @@ feeds.fetchSettings = function() {
   background.log('feeds.fetchSettings()');
 
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
+
+
     if (chrome.runtime.lastError) {
 
       return;
@@ -156,6 +163,9 @@ feeds.fetchCalendars = function() {
 
     var storedCalendars = storage['calendars'] || {};
     chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+      if (background.CUSTOM_AUTH_TOKEN)
+        authToken = background.CUSTOM_AUTH_TOKEN;
+
       if (chrome.runtime.lastError) {
 
         chrome.extension.sendMessage({method: 'sync-icon.spinning.stop'});
@@ -306,6 +316,9 @@ feeds.fetchEventsFromCalendar_ = function(feed, callback) {
   ].join('&'));
 
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
+
     if (chrome.runtime.lastError || !authToken) {
       background.log('getAuthToken', chrome.runtime.lastError.message);
 
@@ -381,6 +394,9 @@ feeds.minutesBefore = 1;
 
 feeds.refreshUI = function() {
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
+    if (background.CUSTOM_AUTH_TOKEN)
+      authToken = background.CUSTOM_AUTH_TOKEN;
+
     if (chrome.runtime.lastError || !authToken) {
       background.updateBadge({
         'color': background.BADGE_COLORS.ERROR,

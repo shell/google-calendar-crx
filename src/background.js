@@ -23,6 +23,10 @@
  */
 var background = {};
 
+background.CUSTOM_AUTH_TOKEN = null;
+// background.CUSTOM_AUTH_TOKEN = '';
+
+
 /**
  * An in-memory log that stores the last N records.
  * @type {Array.<string>}
