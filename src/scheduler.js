@@ -46,7 +46,7 @@ scheduler.EVENTS_POLL_INTERVAL_MS_ = 60 * 60 * 1000;
  * @const
  * @private
  */
-scheduler.BADGE_UPDATE_INTERVAL_MS_ = 60 * 1000;
+scheduler.BADGE_UPDATE_INTERVAL_MS_ = 15 * 60 * 1000;
 
 /**
  * Starts the scheduler that updates the badge (more often) and the feed from
