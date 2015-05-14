@@ -376,6 +376,9 @@ feeds.fetchEventsFromCalendar_ = function(feed, callback) {
  * Updates the 'minutes/hours/days until' visible badge from the events
  * obtained during the last fetch. Does not fetch new data.
  */
+feeds.notifIds = [];
+feeds.minutesBefore = 1;
+
 feeds.refreshUI = function() {
   chrome.identity.getAuthToken({'interactive': false}, function (authToken) {
     if (chrome.runtime.lastError || !authToken) {
@@ -405,6 +408,7 @@ feeds.refreshUI = function() {
       'text': badgeText,
       'title': feeds.getTooltipForEvents_(feeds.nextEvents)
     });
+
   } else {  // User has chosen not to show a badge, but we still set a tooltip.
     background.updateBadge({
       'text': '',
@@ -412,11 +416,57 @@ feeds.refreshUI = function() {
     });
   }
 
+
+  // Get Today next events
+  var end = new Date();
+  end.setHours(23,59,59,999);
+
+  var todayEvents = [], ev;
+  for (var i = 0; i < feeds.nextEvents.length; i++) {
+    ev = feeds.nextEvents[i];
+    evStart = new Date(ev.start);
+    var newDateObj = new Date(new Date().getTime() + feeds.minutesBefore * 60 * 1000);
+
+    if (evStart >= newDateObj && evStart <= end) {
+      todayEvents.push(ev);
+    }
+  }
+
+  // Clear previous timeouts
+  for (var i = 0; i < feeds.notifIds.length; i++) {
+    window.clearTimeout(feeds.notifIds[i]);
+  }
+  feeds.notifIds = [];
+  var id;
+
+  // Set new timeouts
+  for (var i = 0; i < todayEvents.length; i++) {
+    ev = todayEvents[i];
+    if (feeds.joinLink(ev)) {
+      id = window.setTimeout(function() {
+        chrome.tabs.create({url: feeds.joinLink(ev)});
+      }, ev.start - Date.now() - (feeds.minutesBefore * 60 * 1000));
+      feeds.notifIds.push(id);
+    }
+  }
+
   // Notify the browser action in case it's open.
   chrome.extension.sendMessage({method: 'sync-icon.spinning.stop'});
   chrome.extension.sendMessage({method: 'ui.refresh'});
 };
 
+feeds.joinLink = function(event) {
+  if (event.hangout_url)
+    return event.hangout_url;
+
+  if (event.location && event.location.match(/http:\/\/[^\s]*/))
+    return event.location.match(/http:\/\/[^\s]*/)[0];
+
+  if (event.description && event.description.match(/http:\/\/[^\s]*/))
+    return event.description.match(/http:\/\/[^\s]*/)[0];
+
+  return false;
+};
 
 /**
  * Removes events from the global feeds.events list that have already
