@@ -1,21 +1,33 @@
-Google Calendar for Chrome
-==========================
+Google Calendar Join Link Opener for Chrome
+===========================================
 
-[Install now](https://chrome.google.com/webstore/detail/google-calendar-by-google/gmbgaklkmjakoegficnlkhebmhkjfich).
+This solution is fork of [Google Calendar for Chrome](https://github.com/manastungare/google-calendar-crx) repurposed for opening "join meeting" links automatically 1 minute before meeting starts
 
+## Problem
 
-Easily check Google Calendar and add new events from websites you visit.
-------------------------------------------------------------------------
-Get a button on your browser toolbar that you can easily click to see upcoming events from Google Calendar,
-without ever leaving your page. And if you’re on sites that have special events encoded,
-you can click the button to instantly add events to your calendar.
-The button shows an orange plus sign whenever there are events on the page you’re viewing that can be added to your calendar.
+When you having a lot of meetings in your calendar, it's pain everytime to open up calendar app and search for join link in the event description / location / title.
 
 
-Features
---------
-* Displays a preview of your calendar while you’re navigating. (works on any page.)
-* If you’re on certain sites where it detects the presence of events, the icon changes to an orange “+”. Clicking that icon lets you add the event to your Google Calendar, and shows you a map (if there’s a location it could detect.)
-* Any site that uses the hCalendar microformat or derivative microformats such as hResume are supported.
-* This extension shows events from whatever calendars you are logged in within Chrome.
-* If you want to use a Google Apps calendar, you should login to that account first, then open the extension.
+## Installation
+
+  1. Clone this repo
+  2. In Chrome settings click following ![Install extension](assets/add_extension.png?raw=true)
+  3. Point it to **/src** directory of the folder
+  4. Authorize with your google account
+
+## If you using another(company) account for calendars
+
+  1. Click on Account button on top-right of the browser window
+  2. Switch to person -> Add Person
+  3. Enable Google Calendar extension and go through authorization process again
+  4. Open up extension -> settings and click "Reveal auth token"
+  5. Copy and paste token to `/src/background.js` at line 26
+
+    `background.CUSTOM_AUTH_TOKEN = 'YOUR TOKEN HERE';`
+
+  6. Click "Reload" on the Google Calendar in Extensions settings.
+
+
+Extension updates your event list every 15 minutes and opens up Join link 1 minute before a meeting.
+
+You can hide button from the toolbar, it still will be working in background as long as extension is enabled.

@@ -236,6 +236,14 @@ options.fillMessages_ = function() {
   });
 };
 
+options.loadAuthTokenButton_ = function() {
+  $('#reveal_token').on('click', function() {
+    chrome.identity.getAuthToken({'interactive': true}, function (accessToken) {
+      $('<span>').text(accessToken).appendTo($('#auth_token'));
+    });
+  });
+}
+
 
 // Are we running in the context of the Options page? Or is this file being included so that
 // the client can set and get options?
@@ -245,4 +253,5 @@ if ($('html').attr('data-context') == 'options-page') {
   options.writeDefaultsToStorage();
   options.loadOptionsUIFromSavedState();
   options.loadCalendarList();
+  options.loadAuthTokenButton_();
 }

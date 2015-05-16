@@ -66,3 +66,16 @@ label {
 #report-issue-steps ol > li {
   margin-bottom: 1em;
 }
+
+#auth_token span{
+  display: none;
+}
+
+#auth_token span:first-child{
+  display: inherit;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 4px;
+  margin: 8px;
+  padding: 8px;
+  background: #fbfaf8;
+}
